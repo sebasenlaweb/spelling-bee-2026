@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Día 1 — Spelling Bee 2026</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;background:#f5f5f7;color:#1d1d1f;min-height:100vh}
+.app{max-width:520px;margin:0 auto;padding:14px;background:#f5f5f7;min-height:100vh}
+.top-bar{background:#fff;border-radius:16px;padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.top-title{font-size:16px;font-weight:700;margin:0;color:#1d1d1f}
+.top-sub{font-size:12px;color:#6e6e73;margin:3px 0 0}
+.dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:#d1d1d6;transition:background .2s}
+.dot.on{background:#185FA5}
+.section{display:none}
+.section.active{display:block}
+.slabel{font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
+.card{background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.word-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
+.wc{background:#fff;border:2px solid #e5e5ea;border-radius:14px;padding:10px 5px;text-align:center;cursor:pointer;transition:all .15s}
+.wc.sel{border-width:2.5px}
+.wc-icon{font-size:22px;display:block;margin-bottom:3px}
+.wc-word{font-size:11px;font-weight:700;font-family:monospace}
+.wc-es{font-size:10px;color:#6e6e73;margin-top:2px}
+.detail{background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:108px}
+.det-word{font-size:26px;font-weight:700;margin:0 0 3px;font-family:monospace}
+.det-es{font-size:12px;color:#6e6e73;margin:0 0 10px}
+.det-sent{font-size:14px;line-height:1.5;margin:0 0 10px}
+.det-tip{font-size:12px;color:#6e6e73;border-left:3px solid #e5e5ea;padding-left:10px;margin:0}
+.write-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.write-word{font-size:20px;font-weight:700;font-family:monospace;margin:0 0 3px}
+.write-inst{font-size:12px;color:#6e6e73;margin:0 0 10px}
+.write-boxes{display:flex;gap:6px;flex-wrap:wrap}
+.wb{width:36px;height:40px;border-bottom:2.5px solid #d1d1d6;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;font-size:20px;font-weight:700;color:#8e8e93;font-family:monospace}
+.write-note{background:#f5f5f7;border-radius:12px;padding:12px 14px;font-size:13px;color:#6e6e73;margin-bottom:10px;line-height:1.5}
+.pencil-nav{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pencil-pag{font-size:14px;color:#6e6e73;font-weight:700}
+.ref-box{border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.ref-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px;opacity:.7}
+.ref-word{font-size:20px;font-weight:700;font-family:monospace;margin:0 0 5px}
+.ref-sent{font-size:16px;font-weight:600;color:#1d1d1f;margin:0 0 4px;line-height:1.4}
+.ref-es{font-size:12px;color:#6e6e73;margin:0}
+.canvas-wrap{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+canvas{display:block;width:100%;touch-action:none}
+.toolbar{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid #f0f0f0;flex-wrap:wrap}
+.cbtn{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s;flex-shrink:0}
+.cbtn.sel{border-color:#1d1d1f}
+.sbtn{height:30px;border-radius:8px;border:1.5px solid #e5e5ea;padding:0 10px;font-size:12px;font-weight:700;cursor:pointer;background:#f5f5f7;color:#1d1d1f}
+.sbtn.sel{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+.sp{flex:1}
+.tbtn{height:32px;border-radius:8px;border:1.5px solid #e5e5ea;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#1d1d1f}
+.spell-word-name{font-size:22px;font-weight:700;text-align:center;margin:0 0 14px;font-family:monospace}
+.spell-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.sl{width:44px;height:52px;border:2px solid #e5e5ea;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:monospace;background:#fff;transition:all .2s}
+.sl.hit{color:#166534;border-color:#34c759;background:#f0fdf4}
+.sl.empty{color:#d1d1d6}
+.pool{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.lp{width:44px;height:44px;border:1.5px solid #e5e5ea;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;font-family:monospace;cursor:pointer;background:#f5f5f7;color:#1d1d1f;user-select:none}
+.lp:active{transform:scale(0.88)}
+.lp.used{opacity:.2;pointer-events:none}
+.smsg{text-align:center;font-size:14px;font-weight:700;min-height:22px;margin:6px 0 10px}
+.snav{display:flex;align-items:center;justify-content:space-between}
+.spag{font-size:13px;color:#6e6e73}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.aitem{border-radius:14px;padding:14px;text-align:center}
+.afull{grid-column:1/-1}
+/* QUIZ */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.quiz-attempt{font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:.05em}
+.quiz-score-live{font-size:13px;color:#166534;font-weight:700}
+.quiz-progress{height:4px;background:#e5e5ea;border-radius:2px;margin-bottom:16px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:#185FA5;border-radius:2px;transition:width .3s}
+.quiz-q-text{font-size:15px;font-weight:700;margin:0 0 16px;line-height:1.5;color:#1d1d1f}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qo{border:1.5px solid #e5e5ea;border-radius:14px;padding:14px 10px;font-size:14px;font-weight:700;font-family:monospace;cursor:pointer;text-align:center;background:#fff;color:#1d1d1f;user-select:none;line-height:1.3}
+.qo:active{transform:scale(0.95)}
+.qo.correct{background:#f0fdf4;color:#166534;border-color:#34c759}
+.qo.wrong{background:#fef2f2;color:#991b1b;border-color:#ef4444}
+/* RESULT */
+.grade-circle{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:700;margin:0 auto 10px;border:4px solid}
+.grade-label{font-size:13px;font-weight:700;text-align:center;margin:0 0 4px;text-transform:uppercase;letter-spacing:.06em}
+.grade-desc{font-size:14px;color:#6e6e73;text-align:center;margin:0 0 16px;line-height:1.4}
+.score-fraction{font-size:22px;font-weight:700;text-align:center;margin:0 0 16px;color:#1d1d1f}
+.result-row{display:flex;gap:6px;justify-content:center;margin:0 0 20px}
+.rdot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid}
+.review-list{margin:0 0 16px}
+.review-item{border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13px;line-height:1.5}
+.review-q{font-weight:700;color:#1d1d1f;margin:0 0 2px}
+.review-a{color:#166534;margin:0 0 1px}
+.review-u{color:#991b1b;margin:0}
+.attempt-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:16px}
+/* NAV */
+.nav-row{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;border:1.5px solid #e5e5ea;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;background:#fff;color:#1d1d1f;text-align:center}
+.btn:active{transform:scale(0.97)}
+.btn.primary{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.primary:active{background:#0C447C}
+.btn.sm{font-size:12px;padding:10px;flex:0.6}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top-bar">
+    <div>
+      <p class="top-title">Día 1 — Spelling Bee 2026</p>
+      <p class="top-sub" id="sname">Descubre las palabras</p>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="section active" id="sec-0">
+    <p class="slabel">Toca cada palabra</p>
+    <div class="word-grid" id="wgrid"></div>
+    <div class="detail" id="detail"></div>
+    <div class="nav-row"><button class="btn primary" onclick="go(1)">Siguiente: Escribe →</button></div>
+  </div>
+
+  <div class="section" id="sec-1">
+    <p class="slabel">Así se escriben</p>
+    <div id="wlist"></div>
+    <div class="write-note">En tu cuaderno escribe cada palabra <strong>3 veces</strong> con letra grande. Dibuja un mini-ícono al lado.</div>
+    <div class="nav-row">
+      <button class="btn sm" onclick="go(0)">← Volver</button>
+      <button class="btn primary" onclick="go(2)">Siguiente: Escribe la frase →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec-2">
+    <p class="slabel">Escribe la frase con tu Apple Pencil</p>
+    <div class="pencil-nav">
+      <button class="btn sm" style="flex:0.5" onclick="mvP(-1)">← Ant.</button>
+      <span class="pencil-pag" id="ppag">1 / 5</span>
+      <button class="btn sm" style="flex:0.5" onclick="mvP(1)">Sig. →</button>
+    </div>
+    <div class="ref-box" id="refbox"></div>
+    <div class="canvas-wrap">
+      <canvas id="cv"></canvas>
+      <div class="toolbar">
+        <div class="cbtn sel" style="background:#1d1d1f" onclick="setC('#1d1d1f',this)"></div>
+        <div class="cbtn" style="background:#185FA5" onclick="setC('#185FA5',this)"></div>
+        <div class="cbtn" style="background:#166534" onclick="setC('#166534',this)"></div>
+        <div class="cbtn" style="background:#991b1b" onclick="setC('#991b1b',this)"></div>
+        <div class="cbtn" style="background:#854F0B" onclick="setC('#854F0B',this)"></div>
+        <span style="width:1px;height:22px;background:#e5e5ea;margin:0 2px"></span>
+        <button class="sbtn sel" onclick="setS(3,this)">S</button>
+        <button class="sbtn" onclick="setS(5,this)">M</button>
+        <button class="sbtn" onclick="setS(8,this)">L</button>
+        <div class="sp"></div>
+        <button class="tbtn" id="ebtn" onclick="togE()" style="background:#fef2f2;border-color:#fca5a5;color:#991b1b">🧹 Borrar</button>
+        <button class="tbtn" onclick="clrC()">Limpiar</button>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn sm" onclick="go(1)">← Volver</button>
+      <button class="btn primary" onclick="go(3)">Siguiente: Deletrea →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec-3">
+    <p class="slabel">Toca las letras en orden</p>
+    <div class="card" id="spcard"></div>
+    <div class="nav-row">
+      <button class="btn sm" onclick="go(2)">← Volver</button>
+      <button class="btn primary" onclick="go(4)">Siguiente: Actividad →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec-4">
+    <p class="slabel">Actividad creativa</p>
+    <div class="card">
+      <p style="font-size:16px;font-weight:700;margin:0 0 8px">Dibuja tu mochila</p>
+      <p style="font-size:13px;color:#6e6e73;margin:0 0 14px;line-height:1.5">En tu cuaderno dibuja una mochila grande. Adentro dibuja y etiqueta en inglés todos los objetos de hoy:</p>
+      <div class="agrid" id="agrid"></div>
+      <p style="font-size:12px;color:#8e8e93;margin:0">¡Cuélgalo donde estudias. Es tu primer póster del Spelling Bee!</p>
+    </div>
+
+    <div class="card" style="margin-top:0">
+      <p style="font-size:15px;font-weight:700;margin:0 0 6px">📸 Sube tu dibujo</p>
+      <p style="font-size:13px;color:#6e6e73;margin:0 0 14px;line-height:1.5">Cuando termines el dibujo en tu cuaderno, toma una foto y súbela aquí.</p>
+      <input type="file" id="drawingInput" accept="image/*" capture="environment" style="display:none" onchange="handleDrawing(event)">
+      <div id="drawing-preview" style="display:none;margin-bottom:12px">
+        <img id="drawing-img" style="width:100%;border-radius:12px;display:block;margin-bottom:8px" alt="Tu dibujo">
+        <button class="tbtn" onclick="removeDrawing()" style="width:100%;color:#991b1b;border-color:#fca5a5;background:#fef2f2">🗑 Eliminar foto</button>
+      </div>
+      <div id="drawing-btns" style="display:flex;gap:8px">
+        <button class="btn primary" style="flex:1" onclick="document.getElementById('drawingInput').removeAttribute('capture');document.getElementById('drawingInput').click()">🖼 Elegir de fotos</button>
+        <button class="btn primary" style="flex:1;background:#166534;border-color:#166534" onclick="document.getElementById('drawingInput').setAttribute('capture','environment');document.getElementById('drawingInput').click()">📷 Tomar foto</button>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn sm" onclick="go(3)">← Volver</button>
+      <button class="btn primary" onclick="go(5)">Siguiente: Evaluación →</button>
+    </div>
+  </div>
+
+  <div class="section" id="sec-5">
+    <p class="slabel">Evaluación del día</p>
+    <div id="quiz-area">
+      <div class="card" id="qcard"></div>
+    </div>
+    <div class="card" id="result-card" style="display:none"></div>
+    <div class="nav-row" id="qback"><button class="btn sm" onclick="go(4)">← Volver</button></div>
+  </div>
+</div>
+
+<script>
+const W=[
+  {w:"book",es:"libro",icon:"📖",c:{bg:"#E6F1FB",t:"#0C447C",b:"#185FA5"},sent:"I read a book every night.",sentEs:"Yo leo un libro todas las noches.",tip:'Busca un libro y di: "B-O-O-K, book!"'},
+  {w:"pen",es:"bolígrafo",icon:"🖊️",c:{bg:"#EAF3DE",t:"#27500A",b:"#3B6D11"},sent:"My teacher writes with a pen.",sentEs:"Mi maestra escribe con un bolígrafo.",tip:'Toma un bolígrafo: "P-E-N, pen!"'},
+  {w:"pencil",es:"lápiz",icon:"✏️",c:{bg:"#FAEEDA",t:"#633806",b:"#854F0B"},sent:"I draw with a pencil in class.",sentEs:"Yo dibujo con un lápiz en clase.",tip:'Agarra tu lápiz: "P-E-N-C-I-L, pencil!"'},
+  {w:"paper",es:"papel",icon:"📄",c:{bg:"#EEEDFE",t:"#3C3489",b:"#534AB7"},sent:"I write my name on the paper.",sentEs:"Yo escribo mi nombre en el papel.",tip:'Toca una hoja: "P-A-P-E-R, paper!"'},
+  {w:"map",es:"mapa",icon:"🗺️",c:{bg:"#E1F5EE",t:"#085041",b:"#0F6E56"},sent:"The map shows rivers and mountains.",sentEs:"El mapa muestra ríos y montañas.",tip:'Busca un mapa: "M-A-P, map!"'}
+];
+
+// Banco de 15 preguntas — se eligen 5 al azar cada intento
+const BANK=[
+  {q:"¿Cuál es la palabra en inglés para 'libro'?",a:"book",opts:["book","pen","map","paper"],type:"es-en"},
+  {q:"¿Cuál es la palabra en inglés para 'lápiz'?",a:"pencil",opts:["pencil","pen","paper","book"],type:"es-en"},
+  {q:"¿Cuál es la palabra en inglés para 'papel'?",a:"paper",opts:["paper","map","book","pencil"],type:"es-en"},
+  {q:"¿Cuál es la palabra en inglés para 'mapa'?",a:"map",opts:["pen","map","book","pencil"],type:"es-en"},
+  {q:"¿Cuál es la palabra en inglés para 'bolígrafo'?",a:"pen",opts:["pencil","paper","pen","map"],type:"es-en"},
+  {q:"'I read a ___ every night.' ¿Qué palabra falta?",a:"book",opts:["book","pen","map","pencil"],type:"sentence"},
+  {q:"'My teacher writes with a ___.' ¿Qué palabra falta?",a:"pen",opts:["pencil","paper","pen","map"],type:"sentence"},
+  {q:"'I draw with a ___ in class.' ¿Qué palabra falta?",a:"pencil",opts:["pencil","pen","paper","book"],type:"sentence"},
+  {q:"'I write my name on the ___.' ¿Qué palabra falta?",a:"paper",opts:["paper","map","book","pencil"],type:"sentence"},
+  {q:"'The ___ shows rivers and mountains.' ¿Qué palabra falta?",a:"map",opts:["pen","map","book","paper"],type:"sentence"},
+  {q:"📖 ¿Cómo se llama este objeto en inglés?",a:"book",opts:["book","pencil","map","paper"],type:"visual"},
+  {q:"✏️ ¿Cómo se llama este objeto en inglés?",a:"pencil",opts:["pencil","pen","paper","book"],type:"visual"},
+  {q:"🗺️ ¿Cómo se llama este objeto en inglés?",a:"map",opts:["pen","map","book","pencil"],type:"visual"},
+  {q:"📄 ¿Cómo se llama este objeto en inglés?",a:"paper",opts:["paper","map","book","pen"],type:"visual"},
+  {q:"🖊️ ¿Cómo se llama este objeto en inglés?",a:"pen",opts:["pen","pencil","paper","book"],type:"visual"}
+];
+
+const GRADES={
+  A:{letter:"A",label:"Superior",color:"#166534",bg:"#f0fdf4",border:"#34c759",msg:"¡Excelente! Dominas todas las palabras del día. ¡El Spelling Bee te espera!"},
+  B:{letter:"B",label:"Alto",color:"#185FA5",bg:"#E6F1FB",border:"#378ADD",msg:"¡Muy bien! Casi perfecto. Repasa la que fallaste antes de mañana."},
+  C:{letter:"C",label:"Básico",color:"#854F0B",bg:"#FAEEDA",border:"#EF9F27",msg:"Vas bien. Practica un poco más las palabras que se te escaparon."},
+  D:{letter:"D",label:"Bajo",color:"#991b1b",bg:"#fef2f2",border:"#ef4444",msg:"¡No te rindas! Vuelve a la sección 'Descubre' y repasa con calma."}
+};
+
+function getGrade(score,total){
+  const pct=score/total;
+  if(pct===1)return GRADES.A;
+  if(pct>=0.8)return GRADES.B;
+  if(pct>=0.6)return GRADES.C;
+  return GRADES.D;
+}
+
+const SECS=["Descubre","Escribe","Frase con Pencil","Deletrea","Actividad","Evaluación"];
+let cur=0,selW=0,spIdx=0,spPos=0,pIdx=0;
+let qSet=[],qIdx=0,qScore=0,qRes=[],qAttempt=0,canvasReady=false;
+let cv,ctx2,drawing=false,erasing=false,dColor="#1d1d1f",dSize=3;
+
+function dots(){
+  document.getElementById("dots").innerHTML=SECS.map((_,i)=>`<div class="dot${i===cur?" on":""}"></div>`).join('');
+  document.getElementById("sname").textContent=SECS[cur];
+}
+
+function go(i){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById("sec-"+i).classList.add("active");
+  cur=i;dots();
+  if(i===1)bWrite();
+  if(i===2&&!canvasReady)iCanvas();
+  if(i===2){upRef();}
+  if(i===3)bSpell();
+  if(i===4)bAct();
+  if(i===5)startQuiz();
+  window.scrollTo(0,0);
+}
+
+// --- SEC 0 ---
+(function(){
+  document.getElementById("wgrid").innerHTML=W.map((d,i)=>`
+    <div class="wc${i===0?" sel":""}" id="wc${i}" onclick="selW2(${i})" style="${i===0?`border-color:${W[0].c.b}`:""}">
+      <span class="wc-icon">${d.icon}</span>
+      <div class="wc-word" style="${i===0?`color:${W[0].c.t}`:""}">${d.w}</div>
+      <div class="wc-es">${d.es}</div>
+    </div>`).join('');
+  selW2(0);
+})();
+
+function selW2(i){
+  selW=i;
+  W.forEach((_,j)=>{
+    const c=document.getElementById("wc"+j);
+    if(j===i){c.classList.add("sel");c.style.borderColor=W[j].c.b;c.querySelector(".wc-word").style.color=W[j].c.t;}
+    else{c.classList.remove("sel");c.style.borderColor="#e5e5ea";c.querySelector(".wc-word").style.color="";}
+  });
+  const d=W[i];
+  document.getElementById("detail").innerHTML=`<p class="det-word" style="color:${d.c.t}">${d.icon} ${d.w}</p><p class="det-es">${d.es} · ${d.w.length} letras</p><p class="det-sent">"${d.sent}"</p><p class="det-tip">${d.tip}</p>`;
+}
+
+// --- SEC 1 ---
+function bWrite(){
+  document.getElementById("wlist").innerHTML=W.map(d=>`<div class="write-card"><p class="write-word" style="color:${d.c.t}">${d.icon} ${d.w.toUpperCase()}</p><p class="write-inst">${d.es} · ${d.w.length} letras</p><div class="write-boxes">${d.w.split('').map(l=>`<div class="wb" style="border-color:${d.c.b}">${l.toUpperCase()}</div>`).join('')}</div></div>`).join('');
+}
+
+// --- SEC 2 CANVAS ---
+function iCanvas(){
+  cv=document.getElementById("cv");
+  const wrap=cv.parentElement;
+  const CW=wrap.clientWidth;
+  const CH=240;
+  cv.width=CW*2;cv.height=CH*2;
+  cv.style.width=CW+"px";cv.style.height=CH+"px";
+  ctx2=cv.getContext("2d");
+  ctx2.scale(2,2);
+  drawLines(CW,CH);
+  cv.addEventListener("pointerdown",e=>{e.preventDefault();drawing=true;const p=gPos(e);ctx2.beginPath();ctx2.moveTo(p.x,p.y);},{passive:false});
+  cv.addEventListener("pointermove",e=>{
+    e.preventDefault();if(!drawing)return;
+    const p=gPos(e);
+    if(erasing){ctx2.clearRect(p.x-20,p.y-20,40,40);}
+    else{
+      const pr=e.pressure>0?e.pressure:0.5;
+      ctx2.lineWidth=dSize*(0.5+pr);ctx2.lineCap="round";ctx2.lineJoin="round";ctx2.strokeStyle=dColor;
+      ctx2.lineTo(p.x,p.y);ctx2.stroke();ctx2.beginPath();ctx2.moveTo(p.x,p.y);
+    }
+  },{passive:false});
+  cv.addEventListener("pointerup",()=>{drawing=false;},{passive:false});
+  cv.addEventListener("pointercancel",()=>{drawing=false;},{passive:false});
+  canvasReady=true;
+}
+
+function drawLines(CW,CH){
+  ctx2.clearRect(0,0,CW,CH);
+  ctx2.strokeStyle="#e8e8ea";ctx2.lineWidth=0.5;
+  for(let y=38;y<CH;y+=38){ctx2.beginPath();ctx2.moveTo(0,y);ctx2.lineTo(CW,y);ctx2.stroke();}
+  ctx2.strokeStyle="#fca5a5";ctx2.lineWidth=0.5;
+  ctx2.beginPath();ctx2.moveTo(52,0);ctx2.lineTo(52,CH);ctx2.stroke();
+}
+
+function gPos(e){
+  const r=cv.getBoundingClientRect();
+  return{x:(e.clientX-r.left)*(cv.width/2/r.width),y:(e.clientY-r.top)*(cv.height/2/r.height)};
+}
+
+function clrC(){if(!ctx2)return;const CW=cv.width/2,CH=cv.height/2;ctx2.clearRect(0,0,CW,CH);drawLines(CW,CH);}
+
+function setC(c,el){
+  dColor=c;erasing=false;
+  document.querySelectorAll(".cbtn").forEach(b=>b.classList.remove("sel"));
+  el.classList.add("sel");
+  const eb=document.getElementById("ebtn");
+  eb.style.background="#fff";eb.style.borderColor="#e5e5ea";eb.style.color="#1d1d1f";
+}
+
+function setS(s,el){
+  dSize=s;
+  document.querySelectorAll(".sbtn").forEach(b=>b.classList.remove("sel"));
+  el.classList.add("sel");
+}
+
+function togE(){
+  erasing=!erasing;
+  const eb=document.getElementById("ebtn");
+  if(erasing){eb.style.background="#fef2f2";eb.style.borderColor="#ef4444";eb.style.color="#991b1b";}
+  else{eb.style.background="#fff";eb.style.borderColor="#e5e5ea";eb.style.color="#1d1d1f";}
+}
+
+function upRef(){
+  const d=W[pIdx];
+  document.getElementById("refbox").innerHTML=`<p class="ref-label" style="color:${d.c.t}">${d.icon} Referencia</p><p class="ref-word" style="color:${d.c.t}">${d.w}</p><p class="ref-sent">"${d.sent}"</p><p class="ref-es">${d.sentEs}</p>`;
+  document.getElementById("refbox").style.background=d.c.bg;
+  document.getElementById("ppag").textContent=(pIdx+1)+" / "+W.length;
+}
+
+function mvP(d){pIdx=(pIdx+d+W.length)%W.length;upRef();if(ctx2)clrC();}
+
+// --- SEC 3 ---
+function bSpell(){spIdx=0;rSpell();}
+function rSpell(){
+  const d=W[spIdx];
+  const lets=d.w.toUpperCase().split('');
+  const pool=[...lets].sort(()=>Math.random()-.5);
+  spPos=0;
+  document.getElementById("spcard").innerHTML=`<p class="spell-word-name" style="color:${d.c.t}">${d.icon} ${d.w}</p><div class="spell-slots">${lets.map((_,i)=>`<div class="sl empty" id="sl${i}">_</div>`).join('')}</div><p style="font-size:12px;color:#6e6e73;text-align:center;margin:0 0 10px">Toca las letras en orden:</p><div class="pool">${pool.map((l,i)=>`<div class="lp" id="lp${i}" onclick="tapL(this,'${l}')">${l}</div>`).join('')}</div><div class="smsg" id="smsg"></div><div class="snav"><button class="btn sm" style="flex:0.5;font-size:12px" onclick="mvSp(-1)">← Ant.</button><span class="spag">${spIdx+1} / ${W.length}</span><button class="btn sm" style="flex:0.5;font-size:12px" onclick="mvSp(1)">Sig. →</button></div>`;
+}
+function tapL(el,l){
+  const d=W[spIdx],target=d.w.toUpperCase()[spPos];
+  if(l===target){
+    const sl=document.getElementById("sl"+spPos);
+    sl.textContent=l;sl.classList.remove("empty");sl.classList.add("hit");sl.style.borderColor=d.c.b;sl.style.color=d.c.t;sl.style.background=d.c.bg;
+    el.classList.add("used");spPos++;
+    document.getElementById("smsg").innerHTML=spPos===d.w.length?`<span style="color:#166534">¡Perfecto! ${d.w.toUpperCase()} ✓</span>`:"";
+  } else {
+    el.style.background="#fef2f2";el.style.color="#991b1b";
+    setTimeout(()=>{el.style.background="";el.style.color="";},700);
+    document.getElementById("smsg").innerHTML=`<span style="color:#991b1b">¡Esa no! Intenta de nuevo.</span>`;
+  }
+}
+function mvSp(d){spIdx=(spIdx+d+W.length)%W.length;rSpell();}
+
+// --- SEC 4 ---
+function bAct(){
+  document.getElementById("agrid").innerHTML=W.map((d,i)=>`<div class="aitem${i===4?" afull":""}" style="background:${d.c.bg}"><div style="font-size:28px">${d.icon}</div><div style="font-size:14px;font-weight:700;font-family:monospace;color:${d.c.t}">${d.w}</div><div style="font-size:11px;color:${d.c.t};opacity:.7;margin-top:2px">${d.es}</div></div>`).join('');
+}
+
+// --- SEC 5: EVALUACIÓN ---
+function pickQuestions(){
+  // Garantiza al menos 1 pregunta de cada tipo y no repite la misma selección
+  const byType={};
+  BANK.forEach(q=>{if(!byType[q.type])byType[q.type]=[];byType[q.type].push(q);});
+  Object.values(byType).forEach(arr=>arr.sort(()=>Math.random()-.5));
+  let pool=[];
+  // 1 de cada tipo primero
+  Object.values(byType).forEach(arr=>{if(arr.length)pool.push(arr.shift());});
+  // rellenar hasta 5 con lo que quede mezclado
+  const rest=[].concat(...Object.values(byType)).sort(()=>Math.random()-.5);
+  while(pool.length<5&&rest.length)pool.push(rest.shift());
+  return pool.sort(()=>Math.random()-.5).slice(0,5);
+}
+
+function startQuiz(){
+  qSet=pickQuestions();
+  qIdx=0;qScore=0;qRes=[];qAttempt++;
+  document.getElementById("qcard").style.display="block";
+  document.getElementById("result-card").style.display="none";
+  document.getElementById("qback").style.display="flex";
+  renderQ();
+}
+
+function renderQ(){
+  if(qIdx>=qSet.length){showResult();return;}
+  const q=qSet[qIdx];
+  const sh=[...q.opts].sort(()=>Math.random()-.5);
+  const pct=Math.round((qIdx/qSet.length)*100);
+  document.getElementById("qcard").innerHTML=`
+    <div class="quiz-header">
+      <span class="quiz-attempt">Intento ${qAttempt}</span>
+      <span class="quiz-score-live">${qScore} ✓</span>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <p style="font-size:11px;color:#6e6e73;margin:0 0 10px;font-weight:700">${qIdx+1} de 5 — ${q.type==="es-en"?"Español → Inglés":q.type==="sentence"?"Completa la frase":"¿Qué objeto es?"}</p>
+    <p class="quiz-q-text">${q.q}</p>
+    <div class="qopts">${sh.map(o=>`<div class="qo" onclick="ans(this,'${o}','${q.a}')">${o}</div>`).join('')}</div>`;
+}
+
+function ans(el,a,correct){
+  document.querySelectorAll(".qo").forEach(o=>o.style.pointerEvents="none");
+  const isOk=a===correct;
+  if(isOk){el.classList.add("correct");qScore++;}
+  else{el.classList.add("wrong");document.querySelectorAll(".qo").forEach(o=>{if(o.textContent===correct)o.classList.add("correct");});}
+  qRes.push({q:qSet[qIdx].q,correct,userAns:a,ok:isOk});
+  setTimeout(()=>{qIdx++;renderQ();},1000);
+}
+
+function showResult(){
+  document.getElementById("qcard").style.display="none";
+  document.getElementById("qback").style.display="none";
+  const g=getGrade(qScore,5);
+  const dots5=qRes.map(r=>`<div class="rdot" style="background:${r.ok?"#f0fdf4":"#fef2f2"};color:${r.ok?"#166534":"#991b1b"};border-color:${r.ok?"#34c759":"#ef4444"}">${r.ok?"✓":"✗"}</div>`).join('');
+  const wrong=qRes.filter(r=>!r.ok);
+  const reviewHtml=wrong.length?`<p class="slabel" style="margin-top:4px">Repasa estas:</p><div class="review-list">${wrong.map(r=>`<div class="review-item" style="background:#fef2f2"><p class="review-q">${r.q}</p><p class="review-a">Respuesta correcta: <strong>${r.correct}</strong></p><p class="review-u">Tu respuesta: ${r.userAns}</p></div>`).join('')}</div>`:'<div style="background:#f0fdf4;border-radius:12px;padding:12px 14px;text-align:center;font-size:13px;color:#166534;font-weight:700;margin-bottom:16px">¡Sin errores! Perfecto.</div>';
+  document.getElementById("result-card").style.display="block";
+  document.getElementById("result-card").innerHTML=`
+    <div style="text-align:center;padding:8px 0 16px">
+      <div class="attempt-tag" style="background:${g.bg};color:${g.color};border:1.5px solid ${g.border}">Intento ${qAttempt}</div>
+      <div class="grade-circle" style="color:${g.color};background:${g.bg};border-color:${g.border}">${g.letter}</div>
+      <div class="grade-label" style="color:${g.color}">${g.label}</div>
+      <div class="score-fraction">${qScore} / 5 preguntas</div>
+      <div class="result-row">${dots5}</div>
+      <div class="grade-desc">${g.msg}</div>
+    </div>
+    ${reviewHtml}
+    <button class="btn primary" onclick="startQuiz()" style="width:100%;margin-top:4px">Intentar de nuevo con preguntas nuevas</button>
+    <div style="font-size:11px;color:#6e6e73;text-align:center;margin-top:10px">Cada intento tiene preguntas diferentes del banco.</div>`;
+}
+
+dots();
+
+function handleDrawing(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById("drawing-img").src=ev.target.result;
+    document.getElementById("drawing-preview").style.display="block";
+    document.getElementById("drawing-btns").style.display="none";
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeDrawing(){
+  document.getElementById("drawing-img").src="";
+  document.getElementById("drawing-preview").style.display="none";
+  document.getElementById("drawing-btns").style.display="flex";
+  document.getElementById("drawingInput").value="";
+}
+</script>
+</body>
+</html>

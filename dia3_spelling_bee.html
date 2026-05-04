@@ -203,13 +203,13 @@ let vqWords=[],vqCur=0,vqScore=0;
 function bVQ(){vqWords=[...W].sort(()=>Math.random()-.5);vqCur=0;vqScore=0;document.getElementById("vq-zone").style.display="block";document.getElementById("vq-start").style.display="none";rVQ();}
 function rVQ(){const zone=document.getElementById("vq-zone");if(vqCur>=vqWords.length){zone.innerHTML=`<div style="text-align:center;padding:8px 0"><p style="font-size:22px;font-weight:800;margin:0 0 6px">🎉 ¡Terminaste!</p><p style="font-size:16px;color:#166534;font-weight:700;margin:0 0 16px">${vqScore} / ${vqWords.length} correctas ✓</p><button class="btn primary" style="width:100%" onclick="bVQ()">Jugar de nuevo 🔄</button></div>`;return;}const d=vqWords[vqCur];const others=W.filter(x=>x.w!==d.w).sort(()=>Math.random()-.5).slice(0,3);const opts=[d,...others].sort(()=>Math.random()-.5);zone.innerHTML=`<p style="font-size:12px;font-weight:700;color:#6e6e73;margin:0 0 10px">${vqCur+1} de ${vqWords.length} — escucha y elige</p><span class="vq-emoji">${d.icon}</span><p style="font-size:14px;font-weight:700;text-align:center;margin:0 0 14px">¿Cuál es la palabra en inglés?</p><div class="qopts">${opts.map(o=>`<div class="vqo" onclick="ansVQ(this,'${o.w}','${d.w}')">${o.w}</div>`).join("")}</div>`;speakWord(d.w);}
 function ansVQ(el,a,correct){document.querySelectorAll("#vq-zone .vqo").forEach(o=>o.style.pointerEvents="none");const ok=a===correct;if(ok){el.classList.add("correct");vqScore++;speakWord(correct);}else{el.classList.add("wrong");document.querySelectorAll("#vq-zone .vqo").forEach(o=>{if(o.textContent===correct)o.classList.add("correct");});speakWord(correct);}vqCur++;setTimeout(rVQ,1400);}
-function resetDay(){if(window.speechSynthesis)speechSynthesis.cancel();document.querySelectorAll(".blurred").forEach(el=>el.classList.remove("blurred"));document.querySelectorAll(".show-btn").forEach(el=>el.style.display="none");document.querySelectorAll(".dict-btn").forEach(el=>el.style.display="");const vqz=document.getElementById("vq-zone");const vqs=document.getElementById("vq-start");if(vqz)vqz.style.display="none";if(vqs)vqs.style.display="block";if(typeof clrC==="function")clrC();if(typeof spIdx!=="undefined")spIdx=0;if(typeof spPos!=="undefined")spPos=0;if(typeof pIdx!=="undefined")pIdx=0;if(typeof qAttempt!=="undefined"){qAttempt=0;}if(typeof vqCur!=="undefined"){vqCur=0;vqScore=0;vqWords=[];}go(0);if(typeof selW2==="function")selW2(0);}
+function resetAll(){if(window.speechSynthesis)speechSynthesis.cancel();window.location.href="index.html";}
 dots();
 </script>
 
 <div class="fixed-bar">
   <a href="index.html" class="fbar-btn">🏠 Inicio</a>
-  <button class="fbar-btn fbar-reset" onclick="resetDay()">🔄 Reiniciar día</button>
+  <button class="fbar-btn fbar-reset" onclick="resetAll()">🔄 Reiniciar todo</button>
 </div>
 </body>
 </html>

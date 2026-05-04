@@ -328,13 +328,13 @@ function removeDrawing(){document.getElementById("drawing-img").src="";document.
 function speakWord(word){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang="en-US";u.rate=0.75;u.pitch=1.05;speechSynthesis.speak(u);}
 function dictateH(idx){if(!window.speechSynthesis)return;speechSynthesis.cancel();const word=HARD[idx].w;document.getElementById("wb-"+idx).classList.add("blurred");document.getElementById("show-"+idx).style.display="inline-block";document.getElementById("dict-"+idx).style.display="none";const seqs=[word,...word.split(""),word];let si=0;function nxt(){if(si>=seqs.length)return;const txt=seqs[si++];const u=new SpeechSynthesisUtterance(txt);u.lang="en-US";u.rate=txt.length===1?0.55:0.65;u.pitch=1.05;u.onend=()=>setTimeout(nxt,txt.length===1?500:700);speechSynthesis.speak(u);}nxt();}
 function unblur(idx){speechSynthesis.cancel();document.getElementById("wb-"+idx).classList.remove("blurred");document.getElementById("show-"+idx).style.display="none";document.getElementById("dict-"+idx).style.display="inline-block";}
-function resetDay(){if(window.speechSynthesis)speechSynthesis.cancel();document.querySelectorAll(".blurred").forEach(el=>el.classList.remove("blurred"));document.querySelectorAll(".show-btn").forEach(el=>el.style.display="none");document.querySelectorAll(".dict-btn").forEach(el=>el.style.display="");const vqz=document.getElementById("vq-zone");const vqs=document.getElementById("vq-start");if(vqz)vqz.style.display="none";if(vqs)vqs.style.display="block";if(typeof clrC==="function")clrC();if(typeof spIdx!=="undefined")spIdx=0;if(typeof spPos!=="undefined")spPos=0;if(typeof pIdx!=="undefined")pIdx=0;if(typeof qAttempt!=="undefined"){qAttempt=0;}if(typeof vqCur!=="undefined"){vqCur=0;vqScore=0;vqWords=[];}go(0);if(typeof selW2==="function")selW2(0);}
+function resetAll(){if(window.speechSynthesis)speechSynthesis.cancel();window.location.href="index.html";}
 dots();
 </script>
 
 <div class="fixed-bar">
   <a href="index.html" class="fbar-btn">🏠 Inicio</a>
-  <button class="fbar-btn fbar-reset" onclick="resetDay()">🔄 Reiniciar día</button>
+  <button class="fbar-btn fbar-reset" onclick="resetAll()">🔄 Reiniciar todo</button>
 </div>
 </body>
 </html>

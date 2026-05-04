@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Día 12 — Simulacro Final 🏆</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;margin:0;padding:0;background:#0F172A;color:#1d1d1f;min-height:100vh}
+.app{max-width:520px;margin:0 auto;padding:14px}
+.top-bar{background:#1E293B;border-radius:16px;padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.top-title{font-size:16px;font-weight:700;margin:0;color:#fff}.top-sub{font-size:12px;color:#94A3B8;margin:3px 0 0}
+.dots{display:flex;gap:6px}.dot{width:8px;height:8px;border-radius:50%;background:#334155;transition:background .2s}.dot.on{background:#EAB308}
+.section{display:none}.section.active{display:block}
+.slabel{font-size:11px;font-weight:700;color:#6e6e73;text-transform:uppercase;letter-spacing:.06em;margin:0 0 10px}
+.card{background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.hero-card{background:linear-gradient(135deg,#1E293B,#0F172A);border-radius:20px;padding:24px 20px;margin-bottom:12px;color:#fff;text-align:center}
+.hero-bee{font-size:52px;display:block;margin-bottom:12px}
+.hero-title{font-size:22px;font-weight:800;margin:0 0 6px}
+.hero-sub{font-size:13px;color:#94A3B8;margin:0 0 16px;line-height:1.5}
+.hero-date{background:#EAB308;color:#1d1d1f;border-radius:12px;padding:8px 16px;font-size:14px;font-weight:800;display:inline-block}
+.theme-block{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.theme-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
+.word-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border-radius:20px;padding:5px 12px;font-size:13px;font-weight:700;font-family:monospace}
+.write-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.write-word{font-size:20px;font-weight:700;font-family:monospace;margin:0 0 3px}
+.write-inst{font-size:12px;color:#6e6e73;margin:0 0 10px}
+.write-boxes{display:flex;gap:6px;flex-wrap:wrap}
+.wb{width:36px;height:40px;border-bottom:2.5px solid #d1d1d6;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;font-size:20px;font-weight:700;color:#8e8e93;font-family:monospace}
+.pencil-nav{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pencil-pag{font-size:14px;color:#6e6e73;font-weight:700}
+.ref-box{border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.ref-word{font-size:20px;font-weight:700;font-family:monospace;margin:0 0 5px}
+.ref-sent{font-size:16px;font-weight:600;color:#1d1d1f;margin:0 0 4px;line-height:1.4}
+.ref-es{font-size:12px;color:#6e6e73;margin:0}
+.canvas-wrap{background:#fff;border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+canvas{display:block;width:100%;touch-action:none}
+.toolbar{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid #f0f0f0;flex-wrap:wrap}
+.cbtn{width:30px;height:30px;border-radius:50%;cursor:pointer;border:3px solid transparent;flex-shrink:0}.cbtn.sel{border-color:#1d1d1f}
+.sbtn{height:30px;border-radius:8px;border:1.5px solid #e5e5ea;padding:0 10px;font-size:12px;font-weight:700;cursor:pointer;background:#f5f5f7;color:#1d1d1f}.sbtn.sel{background:#1d1d1f;color:#fff;border-color:#1d1d1f}
+.sp{flex:1}.tbtn{height:32px;border-radius:8px;border:1.5px solid #e5e5ea;padding:0 12px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#1d1d1f}
+.spell-word-name{font-size:22px;font-weight:700;text-align:center;margin:0 0 14px;font-family:monospace}
+.spell-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.sl{width:44px;height:52px;border:2px solid #e5e5ea;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:monospace;background:#fff;transition:all .2s}.sl.hit{color:#166534;border-color:#34c759;background:#f0fdf4}.sl.empty{color:#d1d1d6}
+.pool{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.lp{width:44px;height:44px;border:1.5px solid #e5e5ea;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;font-family:monospace;cursor:pointer;background:#f5f5f7;color:#1d1d1f;user-select:none}.lp:active{transform:scale(0.88)}.lp.used{opacity:.2;pointer-events:none}
+.smsg{text-align:center;font-size:14px;font-weight:700;min-height:22px;margin:6px 0 10px}
+.snav{display:flex;align-items:center;justify-content:space-between}.spag{font-size:13px;color:#6e6e73}
+.quiz-progress{height:6px;background:#e5e5ea;border-radius:3px;margin-bottom:14px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:#EAB308;border-radius:3px;transition:width .3s}
+.quiz-counter{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.quiz-q-text{font-size:15px;font-weight:700;margin:0 0 16px;line-height:1.5;color:#1d1d1f}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.qo{border:1.5px solid #e5e5ea;border-radius:14px;padding:14px 10px;font-size:14px;font-weight:700;font-family:monospace;cursor:pointer;text-align:center;background:#fff;color:#1d1d1f;user-select:none;line-height:1.3}.qo:active{transform:scale(0.95)}.qo.correct{background:#f0fdf4;color:#166534;border-color:#34c759}.qo.wrong{background:#fef2f2;color:#991b1b;border-color:#ef4444}
+.nav-row{display:flex;gap:10px;margin-top:12px}
+.btn{flex:1;border:1.5px solid #e5e5ea;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;background:#fff;color:#1d1d1f;text-align:center}.btn:active{transform:scale(0.97)}
+.btn.primary{background:#EAB308;color:#1d1d1f;border-color:#EAB308}.btn.primary:active{background:#CA8A04}
+.btn.sm{font-size:12px;padding:10px;flex:0.6}.btn.home{background:#1E293B;border-color:#334155;color:#fff;font-size:12px;flex:0.5}
+.final-banner{background:linear-gradient(135deg,#EAB308,#CA8A04);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px}
+.final-score{font-size:56px;font-weight:800;color:#1d1d1f;line-height:1}
+.final-label{font-size:14px;font-weight:700;color:#78350F;margin-top:4px}
+.stars{font-size:28px;margin:12px 0}
+.final-msg{font-size:15px;font-weight:700;color:#1d1d1f;margin:0 0 4px;line-height:1.4}
+.final-sub{font-size:13px;color:#78350F;margin:0}
+.result-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.rdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid}
+.review-list{margin:0 0 16px}
+.review-item{border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:13px;line-height:1.5}
+.review-q{font-weight:700;color:#1d1d1f;margin:0 0 2px}.review-a{color:#166534;margin:0 0 1px}.review-u{color:#991b1b;margin:0}
+.ready-banner{background:#f0fdf4;border:2px solid #34c759;border-radius:16px;padding:16px;text-align:center;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top-bar">
+    <div><p class="top-title">Día 12 — Simulacro Final 🏆</p><p class="top-sub" id="sname">¡El gran día!</p></div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <div class="section active" id="sec-0">
+    <div class="hero-card">
+      <span class="hero-bee">🐝</span>
+      <h2 class="hero-title">¡Último repaso!</h2>
+      <p class="hero-sub">Hoy es el día antes del Spelling Bee. Repasa todas las palabras, deletrea en voz alta y haz el simulacro de 10 preguntas.</p>
+      <div class="hero-date">🏆 Spelling Bee: 15 de mayo de 2026</div>
+    </div>
+    <p class="slabel">Repasa las 50 palabras</p>
+    <div id="theme-list"></div>
+    <div class="nav-row"><a href="index.html" class="btn home">🏠</a><button class="btn primary" onclick="go(1)">Siguiente: Escribe →</button></div>
+  </div>
+
+  <div class="section" id="sec-1">
+    <p class="slabel">Escribe las palabras más difíciles</p>
+    <div id="wlist"></div>
+    <div style="background:#FEFCE8;border-radius:12px;padding:12px 14px;font-size:13px;color:#713F12;margin-bottom:10px;line-height:1.5;border:1px solid #EAB308">⭐ Estas son las más largas y difíciles. Escribe cada una <strong>5 veces</strong> despacio y en voz alta.</div>
+    <div class="nav-row"><button class="btn sm" onclick="go(0)">← Volver</button><button class="btn primary" onclick="go(2)">Siguiente: Escribe frases →</button></div>
+  </div>
+
+  <div class="section" id="sec-2">
+    <p class="slabel">Practica con el Apple Pencil</p>
+    <div class="pencil-nav"><button class="btn sm" style="flex:0.5" onclick="mvP(-1)">← Ant.</button><span class="pencil-pag" id="ppag">1 / 5</span><button class="btn sm" style="flex:0.5" onclick="mvP(1)">Sig. →</button></div>
+    <div class="ref-box" id="refbox"></div>
+    <div class="canvas-wrap"><canvas id="cv"></canvas>
+      <div class="toolbar">
+        <div class="cbtn sel" style="background:#1d1d1f" onclick="setC('#1d1d1f',this)"></div>
+        <div class="cbtn" style="background:#EAB308" onclick="setC('#EAB308',this)"></div>
+        <div class="cbtn" style="background:#166534" onclick="setC('#166534',this)"></div>
+        <div class="cbtn" style="background:#991b1b" onclick="setC('#991b1b',this)"></div>
+        <div class="cbtn" style="background:#185FA5" onclick="setC('#185FA5',this)"></div>
+        <span style="width:1px;height:22px;background:#e5e5ea;margin:0 2px"></span>
+        <button class="sbtn sel" onclick="setS(3,this)">S</button><button class="sbtn" onclick="setS(5,this)">M</button><button class="sbtn" onclick="setS(8,this)">L</button>
+        <div class="sp"></div>
+        <button class="tbtn" id="ebtn" onclick="togE()" style="background:#fef2f2;border-color:#fca5a5;color:#991b1b">🧹 Borrar</button>
+        <button class="tbtn" onclick="clrC()">Limpiar</button>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn sm" onclick="go(1)">← Volver</button><button class="btn primary" onclick="go(3)">Siguiente: Deletrea →</button></div>
+  </div>
+
+  <div class="section" id="sec-3">
+    <p class="slabel">Deletrea en voz alta — como en el concurso</p>
+    <div class="card" style="background:#FEFCE8;border:1px solid #EAB308">
+      <p style="font-size:13px;color:#713F12;margin:0;line-height:1.5">🎤 <strong>Tip de competencia:</strong> Di el nombre de la palabra, deletréala letra por letra, y repite la palabra al final. Ejemplo: <em>"butterfly — B-U-T-T-E-R-F-L-Y — butterfly"</em></p>
+    </div>
+    <div class="card" id="spcard"></div>
+    <div class="nav-row"><button class="btn sm" onclick="go(2)">← Volver</button><button class="btn primary" onclick="go(4)">Siguiente: Actividad →</button></div>
+  </div>
+
+  <div class="section" id="sec-4">
+    <p class="slabel">Actividad final</p>
+    <div class="card">
+      <p style="font-size:16px;font-weight:700;margin:0 0 8px">🎤 Practica en el escenario</p>
+      <p style="font-size:13px;color:#6e6e73;margin:0 0 14px;line-height:1.5">Párate frente a un espejo o frente a tu familia. Pide a alguien que diga una palabra en español y tú di la palabra en inglés, la deletreas y la repites. Haz al menos 20 palabras así.</p>
+      <div style="background:#FEFCE8;border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1px solid #EAB308">
+        <p style="font-size:13px;font-weight:700;color:#713F12;margin:0 0 6px">Checklist antes del concurso:</p>
+        <div id="checklist"></div>
+      </div>
+      <p style="font-size:12px;color:#8e8e93;margin:0">¡Duerme bien esta noche. Mañana es tu día! 🌟</p>
+    </div>
+    <div class="card" style="margin-top:0">
+      <p style="font-size:15px;font-weight:700;margin:0 0 6px">📸 Foto de tu práctica final</p>
+      <p style="font-size:13px;color:#6e6e73;margin:0 0 14px;line-height:1.5">Toma una foto practicando frente al espejo o con tu familia.</p>
+      <input type="file" id="drawingInput" accept="image/*" style="display:none" onchange="handleDrawing(event)">
+      <div id="drawing-preview" style="display:none;margin-bottom:12px">
+        <img id="drawing-img" style="width:100%;border-radius:12px;display:block;margin-bottom:8px" alt="Tu práctica">
+        <button class="tbtn" onclick="removeDrawing()" style="width:100%;color:#991b1b;border-color:#fca5a5;background:#fef2f2">🗑 Eliminar foto</button>
+      </div>
+      <div id="drawing-btns" style="display:flex;gap:8px">
+        <button class="btn primary" style="flex:1" onclick="document.getElementById('drawingInput').removeAttribute('capture');document.getElementById('drawingInput').click()">🖼 Elegir de fotos</button>
+        <button class="btn primary" style="flex:1;background:#166534;border-color:#166534;color:#fff" onclick="document.getElementById('drawingInput').setAttribute('capture','environment');document.getElementById('drawingInput').click()">📷 Tomar foto</button>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn sm" onclick="go(3)">← Volver</button><button class="btn primary" onclick="go(5)">🏆 Simulacro Final →</button></div>
+  </div>
+
+  <div class="section" id="sec-5">
+    <p class="slabel">Simulacro — 10 preguntas</p>
+    <div class="card" id="qcard"></div>
+    <div class="card" id="result-card" style="display:none"></div>
+    <div class="nav-row" id="qback"><button class="btn sm" onclick="go(4)">← Volver</button></div>
+  </div>
+</div>
+
+<script>
+const THEMES=[
+  {label:"Salón I",color:{bg:"#E6F1FB",t:"#0C447C",b:"#185FA5"},words:[{w:"book",es:"libro",icon:"📖"},{w:"pen",es:"bolígrafo",icon:"🖊️"},{w:"pencil",es:"lápiz",icon:"✏️"},{w:"paper",es:"papel",icon:"📄"},{w:"map",es:"mapa",icon:"🗺️"}]},
+  {label:"Salón II",color:{bg:"#EDE9FE",t:"#4C1D95",b:"#7C3AED"},words:[{w:"desk",es:"escritorio",icon:"🗂️"},{w:"chair",es:"silla",icon:"🪑"},{w:"board",es:"tablero",icon:"📋"},{w:"clock",es:"reloj",icon:"🕐"},{w:"crayon",es:"crayón",icon:"🖍️"}]},
+  {label:"Salón III",color:{bg:"#D1FAE5",t:"#064E3B",b:"#059669"},words:[{w:"eraser",es:"borrador",icon:"🧼"},{w:"table",es:"mesa",icon:"🪵"},{w:"classroom",es:"salón",icon:"🏫"},{w:"picture",es:"imagen",icon:"🖼️"},{w:"computer",es:"computadora",icon:"💻"}]},
+  {label:"Colegio",color:{bg:"#FDF4FF",t:"#701A75",b:"#C026D3"},words:[{w:"school",es:"colegio",icon:"🏫"},{w:"class",es:"clase",icon:"📚"},{w:"teacher",es:"maestro/a",icon:"👩‍🏫"},{w:"friend",es:"amigo/a",icon:"👫"},{w:"name",es:"nombre",icon:"🏷️"}]},
+  {label:"Jardín",color:{bg:"#DCFCE7",t:"#14532D",b:"#16A34A"},words:[{w:"bird",es:"pájaro",icon:"🐦"},{w:"tree",es:"árbol",icon:"🌳"},{w:"grass",es:"pasto",icon:"🌿"},{w:"flower",es:"flor",icon:"🌸"},{w:"bush",es:"arbusto",icon:"🌱"}]},
+  {label:"Cielo",color:{bg:"#EFF6FF",t:"#1E3A8A",b:"#3B82F6"},words:[{w:"cloud",es:"nube",icon:"☁️"},{w:"sun",es:"sol",icon:"☀️"},{w:"sky",es:"cielo",icon:"🌤️"},{w:"moon",es:"luna",icon:"🌙"},{w:"star",es:"estrella",icon:"⭐"}]},
+  {label:"Tierra",color:{bg:"#F0FDFA",t:"#134E4A",b:"#0D9488"},words:[{w:"river",es:"río",icon:"🏞️"},{w:"ocean",es:"océano",icon:"🌊"},{w:"mountain",es:"montaña",icon:"⛰️"},{w:"rock",es:"roca",icon:"🪨"},{w:"leaf",es:"hoja",icon:"🍃"}]},
+  {label:"Bichitos",color:{bg:"#FEF3C7",t:"#78350F",b:"#D97706"},words:[{w:"plant",es:"planta",icon:"🌿"},{w:"nest",es:"nido",icon:"🪺"},{w:"butterfly",es:"mariposa",icon:"🦋"},{w:"bug",es:"insecto",icon:"🐛"},{w:"bee",es:"abeja",icon:"🐝"}]},
+  {label:"Colores",color:{bg:"#FCE7F3",t:"#831843",b:"#DB2777"},words:[{w:"blue",es:"azul",icon:"💙"},{w:"green",es:"verde",icon:"💚"},{w:"red",es:"rojo",icon:"❤️"},{w:"yellow",es:"amarillo",icon:"💛"},{w:"big",es:"grande",icon:"🐘"},{w:"small",es:"pequeño",icon:"🐭"}]},
+  {label:"Números",color:{bg:"#FEFCE8",t:"#713F12",b:"#CA8A04"},words:[{w:"one",es:"uno",icon:"1️⃣"},{w:"two",es:"dos",icon:"2️⃣"},{w:"three",es:"tres",icon:"3️⃣"},{w:"four",es:"cuatro",icon:"4️⃣"}]},
+];
+
+const ALL_WORDS=THEMES.flatMap(t=>t.words.map(w=>({...w,c:t.color})));
+const HARD=[
+  {w:"butterfly",icon:"🦋",c:{bg:"#FCE7F3",t:"#831843",b:"#DB2777"},sent:"The butterfly has beautiful wings.",sentEs:"La mariposa tiene alas hermosas."},
+  {w:"classroom",icon:"🏫",c:{bg:"#D1FAE5",t:"#064E3B",b:"#059669"},sent:"My classroom is big and colorful.",sentEs:"Mi salón es grande y colorido."},
+  {w:"mountain",icon:"⛰️",c:{bg:"#F5F5F4",t:"#292524",b:"#78716C"},sent:"We climb up the mountain.",sentEs:"Subimos la montaña."},
+  {w:"computer",icon:"💻",c:{bg:"#F0FDFA",t:"#134E4A",b:"#0D9488"},sent:"I use the computer at school.",sentEs:"Uso la computadora en el colegio."},
+  {w:"teacher",icon:"👩‍🏫",c:{bg:"#FDF4FF",t:"#701A75",b:"#C026D3"},sent:"My teacher is very kind.",sentEs:"Mi maestra es muy amable."},
+];
+
+const BANK=[
+  {q:"¿Cuál es la palabra para 'mariposa'?",a:"butterfly",opts:["butterfly","bug","bee","nest"]},
+  {q:"¿Cuál es la palabra para 'computadora'?",a:"computer",opts:["computer","classroom","picture","eraser"]},
+  {q:"¿Cuál es la palabra para 'montaña'?",a:"mountain",opts:["mountain","river","ocean","rock"]},
+  {q:"¿Cuál es la palabra para 'estrella'?",a:"star",opts:["star","moon","sun","cloud"]},
+  {q:"¿Cuál es la palabra para 'arbusto'?",a:"bush",opts:["bush","tree","grass","flower"]},
+  {q:"¿Cuál es la palabra para 'borrador'?",a:"eraser",opts:["eraser","table","picture","computer"]},
+  {q:"¿Cuál es la palabra para 'amigo/a'?",a:"friend",opts:["friend","teacher","name","school"]},
+  {q:"¿Cuál es la palabra para 'océano'?",a:"ocean",opts:["ocean","river","mountain","leaf"]},
+  {q:"¿Cuál es la palabra para 'pequeño'?",a:"small",opts:["small","big","red","yellow"]},
+  {q:"¿Cuál es la palabra para 'tablero'?",a:"board",opts:["board","clock","desk","chair"]},
+  {q:"¿Cuál es la palabra para 'salón de clase'?",a:"classroom",opts:["classroom","school","class","teacher"]},
+  {q:"¿Cuál es la palabra para 'nube'?",a:"cloud",opts:["cloud","sun","sky","moon"]},
+  {q:"¿Cuál es la palabra para 'hoja'?",a:"leaf",opts:["leaf","rock","river","mountain"]},
+  {q:"¿Cuál es la palabra para 'nido'?",a:"nest",opts:["nest","plant","bug","bee"]},
+  {q:"¿Cuál es la palabra para 'cuatro'?",a:"four",opts:["four","three","two","one"]},
+  {q:"🦋 ¿Cómo se llama este insecto?",a:"butterfly",opts:["butterfly","bug","bee","nest"]},
+  {q:"⛰️ ¿Cómo se llama este lugar?",a:"mountain",opts:["mountain","river","ocean","rock"]},
+  {q:"🌊 ¿Cómo se llama este lugar?",a:"ocean",opts:["ocean","river","mountain","leaf"]},
+  {q:"💻 ¿Cómo se llama este objeto?",a:"computer",opts:["computer","classroom","picture","eraser"]},
+  {q:"🍃 ¿Cómo se llama esto?",a:"leaf",opts:["leaf","rock","river","mountain"]},
+  {q:"☁️ ¿Cómo se llama esto?",a:"cloud",opts:["cloud","sun","sky","moon"]},
+  {q:"🌙 ¿Cómo se llama esto?",a:"moon",opts:["moon","star","sky","sun"]},
+  {q:"🪺 ¿Cómo se llama esto?",a:"nest",opts:["nest","plant","bug","bee"]},
+  {q:"🐝 ¿Cómo se llama este insecto?",a:"bee",opts:["bee","bug","plant","nest"]},
+  {q:"🏷️ ¿Cómo se llama esto?",a:"name",opts:["name","friend","teacher","school"]},
+];
+
+const SECS=["Repasa","Escribe","Frases","Deletrea","Actividad","🏆 Simulacro"];
+let cur=0,spIdx=0,spPos=0,pIdx=0,qSet=[],qIdx=0,qScore=0,qRes=[],qAttempt=0,canvasReady=false;
+let cv,ctx2,drawing=false,erasing=false,dColor="#1d1d1f",dSize=3;
+
+function dots(){document.getElementById("dots").innerHTML=SECS.map((_,i)=>`<div class="dot${i===cur?" on":""}"></div>`).join('');document.getElementById("sname").textContent=SECS[cur];}
+function go(i){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById("sec-"+i).classList.add("active");cur=i;dots();if(i===1)bWrite();if(i===2&&!canvasReady)iCanvas();if(i===2)upRef();if(i===3)bSpell();if(i===4)bAct();if(i===5)startQuiz();window.scrollTo(0,0);}
+
+(function(){
+  const el=document.getElementById("theme-list");
+  THEMES.forEach(t=>{
+    const b=document.createElement("div");b.className="theme-block";b.style.borderLeft=`3px solid ${t.color.b}`;
+    b.innerHTML=`<div class="theme-label" style="color:${t.color.t}">${t.label}</div><div class="word-chips">${t.words.map(w=>`<span class="chip" style="background:${t.color.bg};color:${t.color.t}">${w.icon} ${w.w}</span>`).join('')}</div>`;
+    el.appendChild(b);
+  });
+})();
+
+function bWrite(){document.getElementById("wlist").innerHTML=HARD.map(d=>`<div class="write-card"><p class="write-word" style="color:${d.c.t}">${d.icon} ${d.w.toUpperCase()}</p><p class="write-inst">${d.w.length} letras</p><div class="write-boxes">${d.w.split('').map(l=>`<div class="wb" style="border-color:${d.c.b}">${l.toUpperCase()}</div>`).join('')}</div></div>`).join('');}
+
+function upRef(){const d=HARD[pIdx];document.getElementById("refbox").innerHTML=`<p style="font-size:10px;font-weight:700;text-transform:uppercase;color:${d.c.t};margin:0 0 6px">${d.icon} Referencia</p><p class="ref-word" style="color:${d.c.t}">${d.w}</p><p class="ref-sent">"${d.sent}"</p><p class="ref-es">${d.sentEs}</p>`;document.getElementById("refbox").style.background=d.c.bg;document.getElementById("ppag").textContent=(pIdx+1)+" / "+HARD.length;}
+function mvP(d){pIdx=(pIdx+d+HARD.length)%HARD.length;upRef();if(ctx2)clrC();}
+
+function iCanvas(){cv=document.getElementById("cv");const wrap=cv.parentElement;const CW=wrap.clientWidth;const CH=240;cv.width=CW*2;cv.height=CH*2;cv.style.width=CW+"px";cv.style.height=CH+"px";ctx2=cv.getContext("2d");ctx2.scale(2,2);drawLines(CW,CH);cv.addEventListener("pointerdown",e=>{e.preventDefault();drawing=true;const p=gPos(e);ctx2.beginPath();ctx2.moveTo(p.x,p.y);},{passive:false});cv.addEventListener("pointermove",e=>{e.preventDefault();if(!drawing)return;const p=gPos(e);if(erasing){ctx2.clearRect(p.x-20,p.y-20,40,40);}else{const pr=e.pressure>0?e.pressure:0.5;ctx2.lineWidth=dSize*(0.5+pr);ctx2.lineCap="round";ctx2.lineJoin="round";ctx2.strokeStyle=dColor;ctx2.lineTo(p.x,p.y);ctx2.stroke();ctx2.beginPath();ctx2.moveTo(p.x,p.y);}},{passive:false});cv.addEventListener("pointerup",()=>{drawing=false;},{passive:false});cv.addEventListener("pointercancel",()=>{drawing=false;},{passive:false});canvasReady=true;}
+function drawLines(CW,CH){ctx2.clearRect(0,0,CW,CH);ctx2.strokeStyle="#e8e8ea";ctx2.lineWidth=0.5;for(let y=38;y<CH;y+=38){ctx2.beginPath();ctx2.moveTo(0,y);ctx2.lineTo(CW,y);ctx2.stroke();}ctx2.strokeStyle="#fca5a5";ctx2.lineWidth=0.5;ctx2.beginPath();ctx2.moveTo(52,0);ctx2.lineTo(52,CH);ctx2.stroke();}
+function gPos(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)*(cv.width/2/r.width),y:(e.clientY-r.top)*(cv.height/2/r.height)};}
+function clrC(){if(!ctx2)return;const CW=cv.width/2,CH=cv.height/2;ctx2.clearRect(0,0,CW,CH);drawLines(CW,CH);}
+function setC(c,el){dColor=c;erasing=false;document.querySelectorAll(".cbtn").forEach(b=>b.classList.remove("sel"));el.classList.add("sel");const eb=document.getElementById("ebtn");eb.style.background="#fff";eb.style.borderColor="#e5e5ea";eb.style.color="#1d1d1f";}
+function setS(s,el){dSize=s;document.querySelectorAll(".sbtn").forEach(b=>b.classList.remove("sel"));el.classList.add("sel");}
+function togE(){erasing=!erasing;const eb=document.getElementById("ebtn");if(erasing){eb.style.background="#fef2f2";eb.style.borderColor="#ef4444";eb.style.color="#991b1b";}else{eb.style.background="#fff";eb.style.borderColor="#e5e5ea";eb.style.color="#1d1d1f";}}
+
+function bSpell(){spIdx=0;rSpell();}
+function rSpell(){const d=ALL_WORDS[spIdx];const lets=d.w.toUpperCase().split('');const pool=[...lets].sort(()=>Math.random()-.5);spPos=0;document.getElementById("spcard").innerHTML=`<p class="spell-word-name" style="color:${d.c.t}">${d.icon} ${d.w}</p><div class="spell-slots">${lets.map((_,i)=>`<div class="sl empty" id="sl${i}">_</div>`).join('')}</div><p style="font-size:12px;color:#6e6e73;text-align:center;margin:0 0 10px">Toca las letras en orden:</p><div class="pool">${pool.map((l,i)=>`<div class="lp" id="lp${i}" onclick="tapL(this,'${l}')">${l}</div>`).join('')}</div><div class="smsg" id="smsg"></div><div class="snav"><button class="btn sm" style="flex:0.5;font-size:12px" onclick="mvSp(-1)">← Ant.</button><span class="spag">${spIdx+1} / ${ALL_WORDS.length}</span><button class="btn sm" style="flex:0.5;font-size:12px" onclick="mvSp(1)">Sig. →</button></div>`;}
+function tapL(el,l){const d=ALL_WORDS[spIdx],target=d.w.toUpperCase()[spPos];if(l===target){const sl=document.getElementById("sl"+spPos);sl.textContent=l;sl.classList.remove("empty");sl.classList.add("hit");sl.style.borderColor=d.c.b;sl.style.color=d.c.t;sl.style.background=d.c.bg;el.classList.add("used");spPos++;document.getElementById("smsg").innerHTML=spPos===d.w.length?`<span style="color:#166534">¡Perfecto! ${d.w.toUpperCase()} ✓</span>`:"";}else{el.style.background="#fef2f2";el.style.color="#991b1b";setTimeout(()=>{el.style.background="";el.style.color="";},700);document.getElementById("smsg").innerHTML=`<span style="color:#991b1b">¡Esa no! Intenta de nuevo.</span>`;}}
+function mvSp(d){spIdx=(spIdx+d+ALL_WORDS.length)%ALL_WORDS.length;rSpell();}
+
+function bAct(){
+  const items=["Revisé todas las 50 palabras","Escribí las palabras difíciles","Practiqué en voz alta","Dormí bien anoche","Tengo mi lápiz y cuaderno listos"];
+  document.getElementById("checklist").innerHTML=items.map((item,i)=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#713F12;margin-bottom:6px;cursor:pointer"><input type="checkbox" id="chk${i}" style="width:16px;height:16px;accent-color:#EAB308"> ${item}</label>`).join('');
+}
+
+function startQuiz(){
+  const shuffled=[...BANK].sort(()=>Math.random()-.5);
+  qSet=shuffled.slice(0,10);
+  qIdx=0;qScore=0;qRes=[];qAttempt++;
+  document.getElementById("qcard").style.display="block";
+  document.getElementById("result-card").style.display="none";
+  document.getElementById("qback").style.display="flex";
+  renderQ();
+}
+
+function renderQ(){
+  if(qIdx>=qSet.length){showResult();return;}
+  const q=qSet[qIdx];const sh=[...q.opts].sort(()=>Math.random()-.5);const pct=Math.round((qIdx/qSet.length)*100);
+  document.getElementById("qcard").innerHTML=`
+    <div class="quiz-counter">
+      <span style="font-size:13px;font-weight:700;color:#6e6e73">${qIdx+1} de 10</span>
+      <span style="font-size:13px;font-weight:700;color:#166534">${qScore} ✓</span>
+    </div>
+    <div class="quiz-progress"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <p class="quiz-q-text">${q.q}</p>
+    <div class="qopts">${sh.map(o=>`<div class="qo" onclick="ans(this,'${o}','${q.a}')">${o}</div>`).join('')}</div>`;
+}
+
+function ans(el,a,correct){
+  document.querySelectorAll(".qo").forEach(o=>o.style.pointerEvents="none");
+  const isOk=a===correct;
+  if(isOk){el.classList.add("correct");qScore++;}
+  else{el.classList.add("wrong");document.querySelectorAll(".qo").forEach(o=>{if(o.textContent===correct)o.classList.add("correct");});}
+  qRes.push({q:qSet[qIdx].q,correct,userAns:a,ok:isOk});
+  setTimeout(()=>{qIdx++;renderQ();},1000);
+}
+
+function showResult(){
+  document.getElementById("qcard").style.display="none";document.getElementById("qback").style.display="none";
+  const pct=qScore/10;
+  let stars="",msg="",sub="",ready=false;
+  if(pct===1){stars="⭐⭐⭐⭐⭐";msg="¡PERFECTO! 10/10";sub="Estás 100% listo para el Spelling Bee.";ready=true;}
+  else if(pct>=0.8){stars="⭐⭐⭐⭐";msg="¡Excelente! "+qScore+"/10";sub="Estás listo. Repasa las que fallaste esta noche.";ready=true;}
+  else if(pct>=0.6){stars="⭐⭐⭐";msg="Muy bien. "+qScore+"/10";sub="Repasa las palabras difíciles antes de dormir.";}
+  else{stars="⭐⭐";msg="Sigue practicando. "+qScore+"/10";sub="Vuelve a repasar la lista completa de palabras.";}
+  const dots10=qRes.map(r=>`<div class="rdot" style="background:${r.ok?"#f0fdf4":"#fef2f2"};color:${r.ok?"#166534":"#991b1b"};border-color:${r.ok?"#34c759":"#ef4444"}">${r.ok?"✓":"✗"}</div>`).join('');
+  const wrong=qRes.filter(r=>!r.ok);
+  const reviewHtml=wrong.length?`<div class="card"><p class="slabel">Repasa estas antes de dormir:</p><div class="review-list">${wrong.map(r=>`<div class="review-item" style="background:#fef2f2"><p class="review-q">${r.q}</p><p class="review-a">Correcta: <strong>${r.correct}</strong></p><p class="review-u">Tu respuesta: ${r.userAns}</p></div>`).join('')}</div></div>`:"";
+  const readyBanner=ready?`<div class="ready-banner"><p style="font-size:16px;font-weight:800;color:#166534;margin:0 0 4px">✅ ¡Listo para el Spelling Bee!</p><p style="font-size:13px;color:#166534;margin:0">Mañana 15 de mayo — ¡Mucho éxito! 🐝</p></div>`:"";
+  document.getElementById("result-card").style.display="block";
+  document.getElementById("result-card").innerHTML=`
+    <div class="final-banner">
+      <div class="final-score">${qScore}<span style="font-size:28px">/10</span></div>
+      <div class="final-label">Simulacro Final · Intento ${qAttempt}</div>
+      <div class="stars">${stars}</div>
+      <div class="final-msg">${msg}</div>
+      <div class="final-sub">${sub}</div>
+    </div>
+    <div class="result-row">${dots10}</div>
+    ${readyBanner}
+    ${reviewHtml}
+    <button class="btn primary" onclick="startQuiz()" style="width:100%;margin-bottom:8px">🔄 Repetir simulacro</button>
+    <a href="index.html" class="btn" style="display:block;text-align:center;text-decoration:none;background:#1E293B;color:#fff;border-color:#334155;font-weight:700">🏠 Volver al inicio</a>`;
+}
+
+function handleDrawing(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{document.getElementById("drawing-img").src=ev.target.result;document.getElementById("drawing-preview").style.display="block";document.getElementById("drawing-btns").style.display="none";};reader.readAsDataURL(file);}
+function removeDrawing(){document.getElementById("drawing-img").src="";document.getElementById("drawing-preview").style.display="none";document.getElementById("drawing-btns").style.display="flex";document.getElementById("drawingInput").value="";}
+dots();
+</script>
+</body>
+</html>

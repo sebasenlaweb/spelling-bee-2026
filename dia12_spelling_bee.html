@@ -223,6 +223,7 @@ const BANK=[
   {q:"🏷️ ¿Cómo se llama esto?",a:"name",opts:["name","friend","teacher","school"]},
 ];
 
+const DAY_NUM=12;
 const SECS=["Repasa","Escribe","Frases","Deletrea","Actividad","🏆 Simulacro"];
 let cur=0,spIdx=0,spPos=0,pIdx=0,qSet=[],qIdx=0,qScore=0,qRes=[],qAttempt=0,canvasReady=false;
 let cv,ctx2,drawing=false,erasing=false,dColor="#1d1d1f",dSize=3;
@@ -295,6 +296,7 @@ function ans(el,a,correct){
 }
 
 function showResult(){
+  localStorage.setItem("bee_d"+DAY_NUM,"done");
   document.getElementById("qcard").style.display="none";document.getElementById("qback").style.display="none";
   const pct=qScore/10;
   let stars="",msg="",sub="",ready=false;
@@ -328,7 +330,7 @@ function removeDrawing(){document.getElementById("drawing-img").src="";document.
 function speakWord(word){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang="en-US";u.rate=0.75;u.pitch=1.05;speechSynthesis.speak(u);}
 function dictateH(idx){if(!window.speechSynthesis)return;speechSynthesis.cancel();const word=HARD[idx].w;document.getElementById("wb-"+idx).classList.add("blurred");document.getElementById("show-"+idx).style.display="inline-block";document.getElementById("dict-"+idx).style.display="none";const seqs=[word,...word.split(""),word];let si=0;function nxt(){if(si>=seqs.length)return;const txt=seqs[si++];const u=new SpeechSynthesisUtterance(txt);u.lang="en-US";u.rate=txt.length===1?0.55:0.65;u.pitch=1.05;u.onend=()=>setTimeout(nxt,txt.length===1?500:700);speechSynthesis.speak(u);}nxt();}
 function unblur(idx){speechSynthesis.cancel();document.getElementById("wb-"+idx).classList.remove("blurred");document.getElementById("show-"+idx).style.display="none";document.getElementById("dict-"+idx).style.display="inline-block";}
-function resetAll(){if(window.speechSynthesis)speechSynthesis.cancel();window.location.href="index.html";}
+function resetAll(){if(window.speechSynthesis)speechSynthesis.cancel();for(let i=1;i<=12;i++)localStorage.removeItem("bee_d"+i);window.location.href="index.html";}
 dots();
 </script>
 

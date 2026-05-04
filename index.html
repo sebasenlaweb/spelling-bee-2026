@@ -81,11 +81,9 @@ document.getElementById("countdown").innerHTML=`
   <div><div class="count-title">días para el Spelling Bee</div><div class="count-label">15 de mayo de 2026 · ¡Tú puedes!</div></div>`;
 
 function getDayStatus(d){
+  if(localStorage.getItem("bee_d"+d.n)==="done")return"done";
   const dayDate=new Date("2026-05-"+String(d.date.split(" ")[1]).padStart(2,"0"));
-  const todayStr=TODAY.toDateString();
-  const dayStr=dayDate.toDateString();
-  if(dayDate<TODAY&&dayDate.toDateString()!==todayStr)return"done";
-  if(dayStr===todayStr)return"today";
+  if(dayDate.toDateString()===TODAY.toDateString())return"today";
   return"soon";
 }
 

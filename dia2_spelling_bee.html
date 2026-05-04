@@ -95,6 +95,15 @@ canvas{display:block;width:100%;touch-action:none}
 .btn.primary:active{background:#5B21B6}
 .btn.sm{font-size:12px;padding:10px;flex:0.6}
 .btn.home{background:#f5f5f7;border-color:#e5e5ea;font-size:12px;flex:0.5}
+
+.blurred{filter:blur(8px);transition:filter .3s;user-select:none;pointer-events:none}
+.dict-btn{color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+.show-btn{display:none;background:#f5f5f7;color:#1d1d1f;border:1.5px solid #e5e5ea;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+.vq-emoji{font-size:72px;text-align:center;display:block;margin:8px 0 16px}
+.vqo{border:2px solid #e5e5ea;border-radius:14px;padding:12px 10px;font-size:16px;font-weight:700;font-family:monospace;cursor:pointer;text-align:center;background:#fff;color:#1d1d1f;user-select:none;transition:all .15s}
+.vqo:active{transform:scale(0.95)}
+.vqo.correct{background:#f0fdf4;color:#166534;border-color:#34c759}
+.vqo.wrong{background:#fef2f2;color:#991b1b;border-color:#ef4444}
 </style>
 </head>
 <body>
@@ -111,6 +120,8 @@ canvas{display:block;width:100%;touch-action:none}
     <p class="slabel">Toca cada palabra</p>
     <div class="word-grid" id="wgrid"></div>
     <div class="detail" id="detail"></div>
+  <button id="vq-start" class="btn" style="width:100%;margin-bottom:10px;background:#FEF3C7;border-color:#D97706;color:#78350F;font-size:13px;font-weight:700" onclick="bVQ()">🎯 Mini Reto Visual</button>
+  <div class="card" id="vq-zone" style="display:none;padding:16px 18px"></div>
     <div class="nav-row">
       <a href="index.html" class="btn home">🏠</a>
       <button class="btn primary" onclick="go(1)">Siguiente: Escribe →</button>
@@ -272,6 +283,7 @@ function go(i){
 })();
 
 function selW2(i){
+  speakWord(W[i].w);
   selW=i;
   W.forEach((_,j)=>{
     const c=document.getElementById("wc"+j);
@@ -282,9 +294,7 @@ function selW2(i){
   document.getElementById("detail").innerHTML=`<p class="det-word" style="color:${d.c.t}">${d.icon} ${d.w}</p><p class="det-es">${d.es} · ${d.w.length} letras</p><p class="det-sent">"${d.sent}"</p><p class="det-tip">${d.tip}</p>`;
 }
 
-function bWrite(){
-  document.getElementById("wlist").innerHTML=W.map(d=>`<div class="write-card"><p class="write-word" style="color:${d.c.t}">${d.icon} ${d.w.toUpperCase()}</p><p class="write-inst">${d.es} · ${d.w.length} letras</p><div class="write-boxes">${d.w.split('').map(l=>`<div class="wb" style="border-color:${d.c.b}">${l.toUpperCase()}</div>`).join('')}</div></div>`).join('');
-}
+function bWrite(){document.getElementById("wlist").innerHTML=W.map((d,idx)=>`<div class="write-card" id="wcard-${idx}"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><p class="write-word" style="color:${d.c.t};margin:0">${d.icon} ${d.w.toUpperCase()}</p><span style="display:flex;gap:6px"><button id="dict-${idx}" class="dict-btn" style="background:${d.c.b}" onclick="dictate(${idx})">🔊 Dictar</button><button id="show-${idx}" class="show-btn" onclick="unblur(${idx})">👁 Mostrar</button></span></div><p class="write-inst">${d.es} · ${d.w.length} letras</p><div id="wb-${idx}" class="write-boxes">${d.w.split("").map(l=>`<div class="wb" style="border-color:${d.c.b}">${l.toUpperCase()}</div>`).join("")}</div></div>`).join("");}
 
 function iCanvas(){
   cv=document.getElementById("cv");
@@ -353,6 +363,14 @@ function showResult(){
 function handleDrawing(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{document.getElementById("drawing-img").src=ev.target.result;document.getElementById("drawing-preview").style.display="block";document.getElementById("drawing-btns").style.display="none";};reader.readAsDataURL(file);}
 function removeDrawing(){document.getElementById("drawing-img").src="";document.getElementById("drawing-preview").style.display="none";document.getElementById("drawing-btns").style.display="flex";document.getElementById("drawingInput").value="";}
 
+
+function speakWord(word){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang="en-US";u.rate=0.85;speechSynthesis.speak(u);}
+function dictate(idx){if(!window.speechSynthesis)return;speechSynthesis.cancel();const word=W[idx].w;document.getElementById("wb-"+idx).classList.add("blurred");document.getElementById("show-"+idx).style.display="inline-block";document.getElementById("dict-"+idx).style.display="none";const seqs=[word,...word.split(""),word];let si=0;function nxt(){if(si>=seqs.length)return;const u=new SpeechSynthesisUtterance(seqs[si++]);u.lang="en-US";u.rate=0.72;u.onend=nxt;speechSynthesis.speak(u);}nxt();}
+function unblur(idx){speechSynthesis.cancel();document.getElementById("wb-"+idx).classList.remove("blurred");document.getElementById("show-"+idx).style.display="none";document.getElementById("dict-"+idx).style.display="inline-block";}
+let vqWords=[],vqCur=0,vqScore=0;
+function bVQ(){vqWords=[...W].sort(()=>Math.random()-.5);vqCur=0;vqScore=0;document.getElementById("vq-zone").style.display="block";document.getElementById("vq-start").style.display="none";rVQ();}
+function rVQ(){const zone=document.getElementById("vq-zone");if(vqCur>=vqWords.length){zone.innerHTML=`<div style="text-align:center;padding:8px 0"><p style="font-size:22px;font-weight:800;margin:0 0 6px">🎉 ¡Terminaste!</p><p style="font-size:16px;color:#166534;font-weight:700;margin:0 0 16px">${vqScore} / ${vqWords.length} correctas ✓</p><button class="btn primary" style="width:100%" onclick="bVQ()">Jugar de nuevo 🔄</button></div>`;return;}const d=vqWords[vqCur];const others=W.filter(x=>x.w!==d.w).sort(()=>Math.random()-.5).slice(0,3);const opts=[d,...others].sort(()=>Math.random()-.5);zone.innerHTML=`<p style="font-size:12px;font-weight:700;color:#6e6e73;margin:0 0 10px">${vqCur+1} de ${vqWords.length} — escucha y elige</p><span class="vq-emoji">${d.icon}</span><p style="font-size:14px;font-weight:700;text-align:center;margin:0 0 14px">¿Cuál es la palabra en inglés?</p><div class="qopts">${opts.map(o=>`<div class="vqo" onclick="ansVQ(this,'${o.w}','${d.w}')">${o.w}</div>`).join("")}</div>`;speakWord(d.w);}
+function ansVQ(el,a,correct){document.querySelectorAll("#vq-zone .vqo").forEach(o=>o.style.pointerEvents="none");const ok=a===correct;if(ok){el.classList.add("correct");vqScore++;speakWord(correct);}else{el.classList.add("wrong");document.querySelectorAll("#vq-zone .vqo").forEach(o=>{if(o.textContent===correct)o.classList.add("correct");});speakWord(correct);}vqCur++;setTimeout(rVQ,1400);}
 dots();
 </script>
 </body>

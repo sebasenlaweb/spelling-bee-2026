@@ -73,6 +73,12 @@ canvas{display:block;width:100%;touch-action:none}
 .blurred{filter:blur(8px);transition:filter .3s;user-select:none;pointer-events:none}
 .dict-btn{color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
 .show-btn{display:none;background:#f5f5f7;color:#1d1d1f;border:1.5px solid #e5e5ea;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+
+.fixed-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e5e5ea;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,.07)}
+.fbar-btn{border:1.5px solid #e5e5ea;border-radius:12px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;background:#f5f5f7;color:#1d1d1f;text-decoration:none;text-align:center;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.fbar-btn:active{transform:scale(0.95)}
+.fbar-reset{background:#FEF3C7;border-color:#D97706;color:#78350F}
+.app{padding-bottom:72px!important}
 </style>
 </head>
 <body>
@@ -319,10 +325,16 @@ function showResult(){
 function handleDrawing(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{document.getElementById("drawing-img").src=ev.target.result;document.getElementById("drawing-preview").style.display="block";document.getElementById("drawing-btns").style.display="none";};reader.readAsDataURL(file);}
 function removeDrawing(){document.getElementById("drawing-img").src="";document.getElementById("drawing-preview").style.display="none";document.getElementById("drawing-btns").style.display="flex";document.getElementById("drawingInput").value="";}
 
-function speakWord(word){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang="en-US";u.rate=0.85;speechSynthesis.speak(u);}
-function dictateH(idx){if(!window.speechSynthesis)return;speechSynthesis.cancel();const word=HARD[idx].w;document.getElementById("wb-"+idx).classList.add("blurred");document.getElementById("show-"+idx).style.display="inline-block";document.getElementById("dict-"+idx).style.display="none";const seqs=[word,...word.split(""),word];let si=0;function nxt(){if(si>=seqs.length)return;const u=new SpeechSynthesisUtterance(seqs[si++]);u.lang="en-US";u.rate=0.72;u.onend=nxt;speechSynthesis.speak(u);}nxt();}
+function speakWord(word){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang="en-US";u.rate=0.75;u.pitch=1.05;speechSynthesis.speak(u);}
+function dictateH(idx){if(!window.speechSynthesis)return;speechSynthesis.cancel();const word=HARD[idx].w;document.getElementById("wb-"+idx).classList.add("blurred");document.getElementById("show-"+idx).style.display="inline-block";document.getElementById("dict-"+idx).style.display="none";const seqs=[word,...word.split(""),word];let si=0;function nxt(){if(si>=seqs.length)return;const txt=seqs[si++];const u=new SpeechSynthesisUtterance(txt);u.lang="en-US";u.rate=txt.length===1?0.55:0.65;u.pitch=1.05;u.onend=()=>setTimeout(nxt,txt.length===1?500:700);speechSynthesis.speak(u);}nxt();}
 function unblur(idx){speechSynthesis.cancel();document.getElementById("wb-"+idx).classList.remove("blurred");document.getElementById("show-"+idx).style.display="none";document.getElementById("dict-"+idx).style.display="inline-block";}
+function resetDay(){if(window.speechSynthesis)speechSynthesis.cancel();document.querySelectorAll(".blurred").forEach(el=>el.classList.remove("blurred"));document.querySelectorAll(".show-btn").forEach(el=>el.style.display="none");document.querySelectorAll(".dict-btn").forEach(el=>el.style.display="");const vqz=document.getElementById("vq-zone");const vqs=document.getElementById("vq-start");if(vqz)vqz.style.display="none";if(vqs)vqs.style.display="block";if(typeof clrC==="function")clrC();if(typeof spIdx!=="undefined")spIdx=0;if(typeof spPos!=="undefined")spPos=0;if(typeof pIdx!=="undefined")pIdx=0;if(typeof qAttempt!=="undefined"){qAttempt=0;}if(typeof vqCur!=="undefined"){vqCur=0;vqScore=0;vqWords=[];}go(0);if(typeof selW2==="function")selW2(0);}
 dots();
 </script>
+
+<div class="fixed-bar">
+  <a href="index.html" class="fbar-btn">🏠 Inicio</a>
+  <button class="fbar-btn fbar-reset" onclick="resetDay()">🔄 Reiniciar día</button>
+</div>
 </body>
 </html>
